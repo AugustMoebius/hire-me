@@ -1,0 +1,13 @@
+{
+  "name": "hire-me",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n api,console,careers -c blue,green,magenta \"npm run dev -w recruitment-api\" \"npm run dev -w hiring-console\" \"npm run dev -w careers\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}

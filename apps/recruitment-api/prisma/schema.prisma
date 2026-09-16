@@ -1,0 +1,57 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model JobPosting {
+  id                     String   @id @default(uuid())
+  nurseryId              String
+  nurseryName            String
+  title                  String
+  requiredQualifications String
+  workplaceDescription   String
+  roleDescription        String
+  status                 String
+  createdAt              DateTime @default(now())
+  applications           JobApplication[]
+}
+
+model Applicant {
+  email        String   @id
+  name         String
+  phone        String
+  applications JobApplication[]
+  messages     Message[]
+}
+
+model JobApplication {
+  id             String     @id @default(uuid())
+  jobPosting     JobPosting @relation(fields: [jobPostingId], references: [id])
+  jobPostingId   String
+  applicant      Applicant  @relation(fields: [applicantEmail], references: [email])
+  applicantEmail String
+  cv             String
+  resume         String
+  status         String
+  createdAt      DateTime   @default(now())
+}
+
+// A conversation is scoped to a nursery + applicant pair, not a single
+// application — the same two people keep talking even if the applicant has
+// (or later gets) more than one application open at that nursery.
+model Message {
+  id             String    @id @default(uuid())
+  nurseryId      String
+  applicant      Applicant @relation(fields: [applicantEmail], references: [email])
+  applicantEmail String
+  sender         String
+  content        String
+  createdAt      DateTime  @default(now())
+}
